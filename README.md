@@ -1,10 +1,10 @@
-# pikazsh
-# TermPika Setup Script
+# Pikazsh
+## TermPika Setup Script
 
 **TermPika** is a bash script that automates the setup of your terminal environment with the following features:
 
-- **ZSH Installation**:
-- **Shell Configuration**: 
+- **ZSH Installation**: Automatically installs ZSH if it is not already installed.
+- **Shell Configuration**: Switches to ZSH as the default shell if it is not currently set.
 
 ## End Product
 
