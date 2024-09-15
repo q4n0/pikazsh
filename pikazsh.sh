@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "Credits:"
+echo "This script and project were developed by b0urn3. IG:onlybyhive"
+echo "Special thanks to the contributors and open-source community for their tools and resources."
+
 # Function to check if ZSH is installed
 is_zsh_installed() {
     command -v zsh >/dev/null 2>&1
