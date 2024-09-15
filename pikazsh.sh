@@ -88,17 +88,30 @@ replace_zshrc() {
 
 # Clean up repository folder
 cleanup() {
-    echo -e "${YELLOW}Cleaning up repository folder...${RESET}"
-    rm -rf "$clone_dir"
-    echo -e "${GREEN}Cleanup complete.${RESET}"
+    echo -e "${YELLOW}Checking for 'pikazsh' folder to delete...${RESET}"
+    found_pikazsh=$(find "$HOME" -type d -name "pikazsh" 2>/dev/null)
+    
+    if [ -z "$found_pikazsh" ]; then
+        echo -e "${RED}'pikazsh' folder not found.${RESET}"
+    else
+        echo -e "${GREEN}'pikazsh' folder found!${RESET}"
+        echo -e "${YELLOW}Cleaning up repository folder...${RESET}"
+        rm -rf "$found_pikazsh"
+        echo -e "${GREEN}Cleanup complete.${RESET}"
+    fi
 }
 
 # Self-destruct (delete the script and its directory)
 self_destruct() {
     echo -e "${RED}Self-destructing script and repository...${RESET}"
-    rm -rf "$clone_dir"  # Remove the cloned pikazsh directory
-    rm -- "$0"           # Delete the running script itself
-    echo -e "${GREEN}Self-destruction complete.${RESET}"
+    script_path=$(find "$HOME" -type f -name "$(basename "$0")")
+    
+    if [ -z "$script_path" ]; then
+        echo -e "${RED}Error: Could not find the script file for self-destruction.${RESET}"
+    else
+        rm -- "$script_path"  # Delete the running script itself
+        echo -e "${GREEN}Self-destruction complete.${RESET}"
+    fi
 }
 
 # Main script logic
