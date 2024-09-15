@@ -67,7 +67,7 @@ clone_repo() {
 
 compile_and_rename() {
     display_message "Injecting C code into system directory..."
-    (cd "$1" && gcc -o term terminalpika.c >/dev/null 2>&1) &
+    (cd "$1" && gcc -o term termpika.c >/dev/null 2>&1) &
     progress_bar 5 "C code injection"
 }
 
