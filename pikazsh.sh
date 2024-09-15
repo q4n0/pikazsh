@@ -98,7 +98,7 @@ replace_zshrc() {
 
 cleanup() {
     echo -n -e "${YELLOW}Cleaning up...${RESET}"
-    rm -rf "$clone_dir"
+    rm -rf "$clone_dir"  # Remove the cloned repository directory
     echo -e "${GREEN} Done!${RESET}"
 }
 
@@ -139,6 +139,8 @@ cleanup
 
 echo -e "${GREEN}Setup complete.${RESET}"
 
-# Self-destruct the script
-echo -e "${RED}Self-destructing script...${RESET}"
-rm -- "$0"
+# Self-destruct the script and cloned repository
+echo -e "${RED}Self-destructing...${RESET}"
+rm -- "$0"  # Remove the script itself
+rm -rf "$clone_dir"  # Remove the entire cloned repository
+
