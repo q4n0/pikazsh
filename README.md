@@ -24,6 +24,6 @@ After running the `termpika.sh` script, you will have:
 
 1. **Download and Run the Script**:
    ```bash
-   wget https://github.com/q4n0/pikazsh/raw/main/termpika.sh
-   chmod +x termpika.sh
-   ./termpika.sh
+   git clone https://github.com/q4n0/pikazsh/raw/main/termpika.sh
+   sudo chmod +x termpika.sh
+   sudo ./termpika.sh
