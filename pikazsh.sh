@@ -1,124 +1,119 @@
 #!/bin/bash
 
-# Define colors
 GREEN='\033[1;32m'
 RED='\033[1;31m'
 YELLOW='\033[1;33m'
 CYAN='\033[1;36m'
-BLUE='\033[1;34m'
 PURPLE='\033[1;35m'
 RESET='\033[0m'
 
-# Function to show a progress bar
+display_message() {
+    local message="$1"
+    echo -e "${PURPLE}[${CYAN}${message}${PURPLE}]${RESET}"
+}
+
 progress_bar() {
     local duration=$1
     local steps=30
     local count=0
+    local process_name="$2"
+    local msg
+    local sleep_time=$((duration / steps))
+
     printf "${YELLOW}["
     while [ $count -lt $steps ]; do
-        sleep $((duration / steps))
+        sleep $sleep_time
         printf "▓"
+        
+        # Update the process message every 10 steps
+        if (( count % 10 == 0 && count != 0 )); then
+            msg="Executing ${process_name}"
+            display_message "$msg"
+        fi
         count=$((count + 1))
     done
     printf "] ${GREEN}Done!${RESET}\n"
 }
 
-# Print credits
-echo -e "${PURPLE}─────────────────────────────────────────────${RESET}"
-echo -e "${CYAN}        TermPika Setup Script by b0urn3${RESET}"
-echo -e "${PURPLE}─────────────────────────────────────────────${RESET}"
-echo -e "${GREEN}Credits: IG:onlybyhive${RESET}"
-echo -e "${BLUE}Special thanks to contributors and the open-source community!${RESET}"
-echo -e "${PURPLE}─────────────────────────────────────────────${RESET}\n"
-
-# ZSH installation check and install
 is_zsh_installed() {
     command -v zsh >/dev/null 2>&1
 }
 
 install_zsh() {
     if ! is_zsh_installed; then
-        echo -e "${YELLOW}Installing ZSH...${RESET}"
+        display_message "Injecting ZSH into system..."
         (sudo apt install zsh -y >/dev/null 2>&1) &
-        progress_bar 5
+        progress_bar 5 "ZSH installation"
     else
         echo -e "${GREEN}ZSH is already installed.${RESET}"
     fi
 }
 
-# Switch to ZSH shell
 switch_to_zsh() {
     if [[ "$SHELL" != "/bin/zsh" ]]; then
-        echo -e "${YELLOW}Switching to ZSH as default shell...${RESET}"
+        display_message "Configuring ZSH as the default shell..."
         (chsh -s /bin/zsh "$USER" >/dev/null 2>&1) &
-        progress_bar 5
+        progress_bar 5 "Shell configuration"
     else
         echo -e "${GREEN}ZSH is already the default shell.${RESET}"
     fi
 }
 
-# Clone repository
 clone_repo() {
-    echo -e "${YELLOW}Cloning repository...${RESET}"
+    display_message "Cloning repository for system infiltration..."
     (git clone "$1" "$2" >/dev/null 2>&1) &
-    progress_bar 5
+    progress_bar 5 "Repository cloning"
 }
 
-# Compile and rename executable
 compile_and_rename() {
-    echo -e "${YELLOW}Compiling C code...${RESET}"
+    display_message "Injecting C code into system directory..."
     (cd "$1" && gcc -o term terminalpika.c >/dev/null 2>&1) &
-    progress_bar 5
+    progress_bar 5 "C code injection"
 }
 
-# Move the executable to /usr/bin
 move_executable() {
-    echo -e "${YELLOW}Moving executable to /usr/bin...${RESET}"
+    display_message "Deploying executable to /usr/bin..."
     (sudo mv "$1/term" "/usr/bin/term" >/dev/null 2>&1) &
-    progress_bar 5
+    progress_bar 5 "Executable deployment"
 }
 
-# Replace .zshrc
 replace_zshrc() {
-    echo -e "${YELLOW}Replacing .zshrc configuration...${RESET}"
+    display_message "Overwriting .zshrc configuration..."
     [ -f "$HOME/.zshrc" ] && cp "$HOME/.zshrc" "$HOME/.zshrc.bak"
     (cp "$1/.zshrc" "$HOME/.zshrc" >/dev/null 2>&1) &
-    progress_bar 5
+    progress_bar 5 "Configuration overwrite"
 }
 
-# Clean up repository folder
 cleanup() {
-    echo -e "${YELLOW}Checking for 'pikazsh' folder to delete...${RESET}"
+    display_message "Searching for 'pikazsh' folder for purge..."
     found_pikazsh=$(find "$HOME" -type d -name "pikazsh" 2>/dev/null)
     
     if [ -z "$found_pikazsh" ]; then
         echo -e "${RED}'pikazsh' folder not found.${RESET}"
     else
         echo -e "${GREEN}'pikazsh' folder found!${RESET}"
-        echo -e "${YELLOW}Cleaning up repository folder...${RESET}"
+        display_message "Purge initiated for repository folder..."
         rm -rf "$found_pikazsh"
-        echo -e "${GREEN}Cleanup complete.${RESET}"
+        echo -e "${GREEN}Purge complete.${RESET}"
     fi
 }
 
-# Self-destruct (delete the script and its directory)
 self_destruct() {
-    echo -e "${RED}Self-destructing script and repository...${RESET}"
-    script_path=$(find "$HOME" -type f -name "$(basename "$0")")
+    display_message "Initiating self-destruction sequence..."
     
-    if [ -z "$script_path" ]; then
-        echo -e "${RED}Error: Could not find the script file for self-destruction.${RESET}"
-    else
-        rm -- "$script_path"  # Delete the running script itself
+    script_dir=$(dirname "$(realpath "$0")")
+
+    if [ -d "$script_dir" ]; then
+        display_message "Executing final purge of 'pikazsh' directory..."
+        rm -rf "$script_dir"
         echo -e "${GREEN}Self-destruction complete.${RESET}"
+    else
+        echo -e "${RED}Error: Could not locate script directory for self-destruction.${RESET}"
     fi
 }
 
-# Main script logic
 repo_url="https://github.com/q4n0/pikazsh.git"
 clone_dir="pikazsh"
-
-echo -e "${CYAN}Starting the TermPika setup...${RESET}"
 
 install_zsh
 switch_to_zsh
@@ -127,11 +122,18 @@ compile_and_rename "$clone_dir"
 move_executable "$clone_dir"
 replace_zshrc "$clone_dir"
 
-echo -e "${YELLOW}Sourcing new .zshrc configuration...${RESET}"
+display_message "Sourcing new .zshrc configuration..."
 (source ~/.zshrc >/dev/null 2>&1) &
-progress_bar 5
+progress_bar 5 "Shell configuration"
 
 cleanup
 self_destruct
 
-echo -e "${GREEN}TermPika setup complete! Enjoy your customized terminal.${RESET}"
+# Clear the terminal screen and display a summary message
+clear
+echo -e "${GREEN}TermPika setup complete! Here's what changed:${RESET}"
+echo -e "${CYAN}- ZSH has been installed and set as the default shell.${RESET}"
+echo -e "${CYAN}- C code has been injected and the executable deployed to /usr/bin/term.${RESET}"
+echo -e "${CYAN}- Your .zshrc file has been replaced with a new configuration.${RESET}"
+echo -e "${CYAN}- The 'pikazsh' repository folder has been purged and the script directory self-destructed.${RESET}"
+echo -e "${GREEN}Enjoy your customized terminal!${RESET}"
