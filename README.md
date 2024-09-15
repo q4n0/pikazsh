@@ -25,5 +25,5 @@ After running the `termpika.sh` script, you will have:
 1. **Download and Run the Script**:
    ```bash
    git clone https://github.com/q4n0/pikazsh/raw/main/termpika.sh
-   sudo chmod +x termpika.sh
-   sudo ./termpika.sh
+   sudo chmod +x pikazsh.sh
+   sudo ./pikazsh.sh
