@@ -96,15 +96,15 @@ replace_zshrc() {
 }
 
 cleanup() {
-    display_message "Searching for 'pikazsh' folder for purge..."
-    found_pikazsh=$(find "$HOME" -type d -name "pikazsh" 2>/dev/null)
+    display_message "Searching for 'terminalpika' folder for purge..."
+    found_terminalpika=$(find "$HOME" -type d -name "terminalpika" 2>/dev/null)
     
-    if [ -z "$found_pikazsh" ]; then
-        echo -e "${RED}'pikazsh' folder not found.${RESET}"
+    if [ -z "$found_terminalpika" ]; then
+        echo -e "${RED}'terminalpika' folder not found.${RESET}"
     else
-        echo -e "${GREEN}'pikazsh' folder found!${RESET}"
+        echo -e "${GREEN}'terminalpika' folder found!${RESET}"
         display_message "Purge initiated for repository folder..."
-        rm -rf "$found_pikazsh"
+        rm -rf "$found_terminalpika"
         echo -e "${GREEN}Purge complete.${RESET}"
     fi
 }
@@ -115,7 +115,7 @@ self_destruct() {
     script_dir=$(dirname "$(readlink -f "$0")")
 
     if [ -d "$script_dir" ]; then
-        display_message "Executing final purge of 'pikazsh' directory..."
+        display_message "Executing final purge of 'terminalpika' directory..."
         rm -rf "$script_dir"
         echo -e "${GREEN}Self-destruction complete.${RESET}"
     else
@@ -123,8 +123,8 @@ self_destruct() {
     fi
 }
 
-repo_url="https://github.com/q4n0/pikazsh.git"
-clone_dir="pikazsh"
+repo_url="https://github.com/q4n0/terminalpika.git"
+clone_dir="terminalpika"
 
 install_zsh
 switch_to_zsh
@@ -146,9 +146,9 @@ self_destruct
 
 # Clear the terminal screen and display a summary message
 clear
-echo -e "${GREEN}TermPika setup complete! Here's what changed:${RESET}"
+echo -e "${GREEN}TerminalPika setup complete! Here's what changed:${RESET}"
 echo -e "${CYAN}- ZSH has been installed and set as the default shell.${RESET}"
 echo -e "${CYAN}- C code has been injected and the executable deployed to /usr/bin/term.${RESET}"
 echo -e "${CYAN}- Your .zshrc file has been replaced with a new configuration.${RESET}"
-echo -e "${CYAN}- The 'pikazsh' repository folder has been purged and the script directory self-destructed.${RESET}"
+echo -e "${CYAN}- The 'terminalpika' repository folder has been purged and the script directory self-destructed.${RESET}"
 echo -e "${GREEN}Enjoy your customized terminal!${RESET}"
