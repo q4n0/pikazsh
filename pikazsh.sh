@@ -19,6 +19,7 @@ progress_bar() {
     local process_name="$2"
     local msg
     local sleep_time=$((duration / steps))
+    local remainder=$((duration % steps))
 
     printf "${YELLOW}["
     while [ $count -lt $steps ]; do
@@ -32,6 +33,10 @@ progress_bar() {
         fi
         count=$((count + 1))
     done
+    # Handle any remaining time
+    if [ $remainder -ne 0 ]; then
+        sleep $remainder
+    fi
     printf "] ${GREEN}Done!${RESET}\n"
 }
 
@@ -43,6 +48,7 @@ install_zsh() {
     if ! is_zsh_installed; then
         display_message "Injecting ZSH into system..."
         (sudo apt install zsh -y >/dev/null 2>&1) &
+        wait
         progress_bar 5 "ZSH installation"
     else
         echo -e "${GREEN}ZSH is already installed.${RESET}"
@@ -53,6 +59,7 @@ switch_to_zsh() {
     if [[ "$SHELL" != "/bin/zsh" ]]; then
         display_message "Configuring ZSH as the default shell..."
         (chsh -s /bin/zsh "$USER" >/dev/null 2>&1) &
+        wait
         progress_bar 5 "Shell configuration"
     else
         echo -e "${GREEN}ZSH is already the default shell.${RESET}"
@@ -62,18 +69,21 @@ switch_to_zsh() {
 clone_repo() {
     display_message "Cloning repository for system infiltration..."
     (git clone "$1" "$2" >/dev/null 2>&1) &
+    wait
     progress_bar 5 "Repository cloning"
 }
 
 compile_and_rename() {
     display_message "Injecting C code into system directory..."
     (cd "$1" && gcc -o term termpika.c >/dev/null 2>&1) &
+    wait
     progress_bar 5 "C code injection"
 }
 
 move_executable() {
     display_message "Deploying executable to /usr/bin..."
     (sudo mv "$1/term" "/usr/bin/term" >/dev/null 2>&1) &
+    wait
     progress_bar 5 "Executable deployment"
 }
 
@@ -81,6 +91,7 @@ replace_zshrc() {
     display_message "Overwriting .zshrc configuration..."
     [ -f "$HOME/.zshrc" ] && cp "$HOME/.zshrc" "$HOME/.zshrc.bak"
     (cp "$1/.zshrc" "$HOME/.zshrc" >/dev/null 2>&1) &
+    wait
     progress_bar 5 "Configuration overwrite"
 }
 
@@ -101,7 +112,7 @@ cleanup() {
 self_destruct() {
     display_message "Initiating self-destruction sequence..."
     
-    script_dir=$(dirname "$(realpath "$0")")
+    script_dir=$(dirname "$(readlink -f "$0")")
 
     if [ -d "$script_dir" ]; then
         display_message "Executing final purge of 'pikazsh' directory..."
@@ -122,9 +133,13 @@ compile_and_rename "$clone_dir"
 move_executable "$clone_dir"
 replace_zshrc "$clone_dir"
 
-display_message "Sourcing new .zshrc configuration..."
-(source ~/.zshrc >/dev/null 2>&1) &
-progress_bar 5 "Shell configuration"
+if [ -f ~/.zshrc ]; then
+    display_message "Sourcing new .zshrc configuration..."
+    source ~/.zshrc
+    progress_bar 5 "Shell configuration"
+else
+    echo -e "${RED}.zshrc not found.${RESET}"
+fi
 
 cleanup
 self_destruct
