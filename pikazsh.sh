@@ -89,9 +89,28 @@ move_executable() {
 
 replace_zshrc() {
     display_message "Overwriting .zshrc configuration..."
-    [ -f "$HOME/.zshrc" ] && cp "$HOME/.zshrc" "$HOME/.zshrc.bak"
-    (cp "$1/.zshrc" "$HOME/.zshrc" >/dev/null 2>&1) &
-    wait
+    
+    # Check if the new .zshrc file exists in the repository directory
+    if [ ! -f "$1/.zshrc" ]; then
+        echo -e "${RED}New .zshrc file not found in the repository.${RESET}"
+        return 1
+    fi
+
+    # Backup existing .zshrc if it exists
+    if [ -f "$HOME/.zshrc" ]; then
+        echo -e "${YELLOW}Backing up existing .zshrc to .zshrc.bak...${RESET}"
+        cp "$HOME/.zshrc" "$HOME/.zshrc.bak" || {
+            echo -e "${RED}Failed to back up existing .zshrc.${RESET}"
+            return 1
+        }
+    fi
+
+    # Copy new .zshrc file from the repository to home directory
+    cp "$1/.zshrc" "$HOME/.zshrc" || {
+        echo -e "${RED}Failed to copy new .zshrc.${RESET}"
+        return 1
+    }
+
     progress_bar 5 "Configuration overwrite"
 }
 
