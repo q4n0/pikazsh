@@ -60,8 +60,5 @@ If you encounter any issues, please check the log file for detailed information.
 ## Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## License
-This script is released under the MIT License. See the LICENSE file for details.
-
 ## Disclaimer
 This script modifies system settings and installs software. While it includes safety checks and backups, please review the script and use it at your own risk.
