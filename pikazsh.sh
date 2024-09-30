@@ -194,10 +194,7 @@ main() {
     
     if [[ "$(basename "$SHELL")" != "zsh" ]]; then
         change_shell
-    fi
-    
-    if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
-        install_oh_my_zsh
+
     fi
     
     install_zsh_plugins
